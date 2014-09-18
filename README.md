@@ -1,4 +1,4 @@
-# Hiptail
+# HipTail
 
 TODO: Write a gem description
 
