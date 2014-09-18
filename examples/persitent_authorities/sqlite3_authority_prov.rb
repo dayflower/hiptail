@@ -1,0 +1,75 @@
+require 'hiptail'
+require 'sqlite3'
+
+class SQLite3AuthorityProvider < HipTail::AuthorityProvider
+  def initialize(db)
+    @authorities = {}
+    @db = db
+
+    build
+  end
+
+  def build
+    @db.execute_batch <<-'END_SQL'
+      CREATE TABLE IF NOT EXISTS room_auth (
+          oauth_id          VARCHAR(255) NOT NULL PRIMARY KEY,
+          oauth_secret      VARCHAR(255) NOT NULL,
+          authorization_url VARCHAR(255) NOT NULL,
+          token_url         VARCHAR(255) NOT NULL,
+          room_id           INT UNSIGNED,
+          group_id          INT UNSIGNED NOT NULL,
+          api_base          VARCHAR(255) NOT NULL
+      );
+    END_SQL
+  end
+
+  SQL_GET = <<-'END_SQL'
+    SELECT * FROM room_auth WHERE oauth_id = ? LIMIT 1
+  END_SQL
+
+  def get(oauth_id)
+    unless @authorities.include?(oauth_id)
+STDERR.puts "not found '#{oauth_id}'"
+      begin
+        last_rah = @db.results_as_hash
+        @db.results_as_hash = true
+        @db.execute(SQL_GET, oauth_id) do |row|
+STDERR.puts "found '#{oauth_id}'"
+          data = row.to_a.select { |f| f[0].is_a?(String) }.map { |f| [ f[0].to_sym, f[1] ] }
+          @authorities[oauth_id] = HipTail::Authority.new(Hash[*data.flatten(1)])
+          break
+        end
+      ensure
+        @db.results_as_hash = last_rah
+      end
+    end
+
+    @authorities[oauth_id]
+  end
+
+  SQL_REGISTER = <<-'END_SQL'
+    REPLACE INTO room_auth
+      ( oauth_id, oauth_secret, authorization_url, token_url, room_id, group_id, api_base )
+      VALUES ( :oauth_id, :oauth_secret, :authorization_url, :token_url, :room_id, :group_id, :api_base )
+  END_SQL
+
+  def register(oauth_id, authority)
+    @authorities[oauth_id] = authority
+
+    row_data = authority.as_hash
+    [ :api_base, :authorization_url, :token_url ].each do |key|
+      row_data[key] = row_data[key].to_s
+    end
+    @db.execute(SQL_REGISTER, row_data)
+  end
+
+  SQL_UNREGISTER = <<-'END_SQL'
+    DELETE FROM room_auth WHERE oauth_id = ?
+  END_SQL
+
+  def unregister(oauth_id)
+    @authorities.delete(oauth_id)
+
+    @db.execute(SQL_UNREGISTER, oauth_id)
+  end
+end
