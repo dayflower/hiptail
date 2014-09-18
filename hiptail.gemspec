@@ -5,7 +5,7 @@ require 'hiptail/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "hiptail"
-  spec.version       = Hiptail::VERSION
+  spec.version       = HipTail::VERSION
   spec.authors       = ["ITO Nobuaki"]
   spec.email         = ["daydream.trippers@gmail.com"]
   spec.summary       = %q{Hipchat add-on framework}
