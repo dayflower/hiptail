@@ -29,12 +29,10 @@ class SQLite3AuthorityProvider < HipTail::AuthorityProvider
 
   def get(oauth_id)
     unless @authorities.include?(oauth_id)
-STDERR.puts "not found '#{oauth_id}'"
       begin
         last_rah = @db.results_as_hash
         @db.results_as_hash = true
         @db.execute(SQL_GET, oauth_id) do |row|
-STDERR.puts "found '#{oauth_id}'"
           data = row.to_a.select { |f| f[0].is_a?(String) }.map { |f| [ f[0].to_sym, f[1] ] }
           @authorities[oauth_id] = HipTail::Authority.new(Hash[*data.flatten(1)])
           break
