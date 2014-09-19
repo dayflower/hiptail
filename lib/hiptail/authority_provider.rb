@@ -1,5 +1,13 @@
 module HipTail
   class AuthorityProvider
+    def [](oauth_id)
+      get(oauth_id)
+    end
+
+    def []=(oauth_id, authority)
+      register(oauth_id, authority)
+    end
+
     def get(oauth_id)
       raise
     end
