@@ -5,7 +5,7 @@ require 'open-uri'
 
 require 'hiptail/event'
 require 'hiptail/authority'
-require 'hiptail/authority_provider'
+require 'hiptail/authority/provider'
 
 module HipTail
   class Manager

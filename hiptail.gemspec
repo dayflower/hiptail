@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
     lib/hiptail.rb
     lib/hiptail/atom.rb
     lib/hiptail/authority.rb
-    lib/hiptail/authority_provider.rb
+    lib/hiptail/authority/provider.rb
     lib/hiptail/event.rb
     lib/hiptail/manager.rb
     lib/hiptail/version.rb
