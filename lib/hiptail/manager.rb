@@ -1,4 +1,3 @@
-require 'ostruct'
 require 'json'
 require 'uri'
 require 'open-uri'
@@ -70,13 +69,13 @@ module HipTail
 
       @authority_provider.register(authority.oauth_id, authority)
 
-      call_hooks :install, OpenStruct.new( :authority => authority )
+      call_hooks :install, authority
     end
 
     def handle_uninstall(oauth_id)
       authority = self.authority[oauth_id]
 
-      call_hooks :uninstall, OpenStruct.new( :authority => authority )
+      call_hooks :uninstall, authority, oauth_id
 
       @authority_provider.unregister(oauth_id)
     end
@@ -85,26 +84,25 @@ module HipTail
       event = Event.parse(params)
       authority = self.authority[event.oauth_client_id]
 
-      hook_params = OpenStruct.new( :event => event, :authority => authority )
-      call_hooks :event, hook_params
+      call_hooks :event, authority, event
 
-      if hook_params.event.is_a?(Event::RoomMessaging)
-        call_hooks :room_messaging, hook_params
+      if event.is_a?(Event::RoomMessaging)
+        call_hooks :room_messaging, authority, event
 
-        case hook_params.event
+        case event
         when Event::RoomMessage
-          call_hooks :room_message, hook_params
+          call_hooks :room_message, authority, event
         when Event::RoomNotification
-          call_hooks :room_notification, hook_params
+          call_hooks :room_notification, authority, event
         end
-      elsif hook_params.event.is_a?(Event::RoomVisiting)
-        call_hooks :room_visiting, hook_params
+      elsif event.is_a?(Event::RoomVisiting)
+        call_hooks :room_visiting, authority, event
 
-        case hook_params.event
+        case event
         when Event::RoomEnter
-          call_hooks :room_enter, hook_params
+          call_hooks :room_enter, authority, event
         when Event::RoomExit
-          call_hooks :room_exit, hook_params
+          call_hooks :room_exit, authority, event
         end
       end
     end
