@@ -9,16 +9,6 @@ require 'hiptail/authority_provider'
 
 module HipTail
   class Manager
-    class AuthorityManager
-      def initialize(authority_provider)
-        @authority_provider = authority_provider
-      end
-
-      def [](oauth_id)
-        @authority_provider.get(oauth_id)
-      end
-    end
-
     def initialize(params = {})
       @authority_provider = params[:authority_provider] || MemoryAuthorityProvider.new
 
@@ -151,6 +141,16 @@ module HipTail
         :token_url         => oauth2_info['tokenUrl'],
         :api_base          => server_cap['links']['api'],
       )
+    end
+
+    class AuthorityManager
+      def initialize(authority_provider)
+        @authority_provider = authority_provider
+      end
+
+      def [](oauth_id)
+        @authority_provider.get(oauth_id)
+      end
     end
   end
 end
