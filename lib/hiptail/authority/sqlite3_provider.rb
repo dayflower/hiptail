@@ -18,7 +18,8 @@ class HipTail::SQLite3AuthorityProvider < HipTail::AuthorityProvider
           token_url         VARCHAR(255) NOT NULL,
           room_id           INT UNSIGNED,
           group_id          INT UNSIGNED NOT NULL,
-          api_base          VARCHAR(255) NOT NULL
+          api_base          VARCHAR(255) NOT NULL,
+          created_at        INTEGER NOT NULL
       );
     END_SQL
   end
@@ -47,8 +48,8 @@ class HipTail::SQLite3AuthorityProvider < HipTail::AuthorityProvider
 
   SQL_REGISTER = <<-'END_SQL'
     REPLACE INTO hiptail_authority
-      ( oauth_id, oauth_secret, authorization_url, token_url, room_id, group_id, api_base )
-      VALUES ( :oauth_id, :oauth_secret, :authorization_url, :token_url, :room_id, :group_id, :api_base )
+      ( oauth_id, oauth_secret, authorization_url, token_url, room_id, group_id, api_base, created_at )
+      VALUES ( :oauth_id, :oauth_secret, :authorization_url, :token_url, :room_id, :group_id, :api_base, :created_at )
   END_SQL
 
   def register(oauth_id, authority)
@@ -58,6 +59,7 @@ class HipTail::SQLite3AuthorityProvider < HipTail::AuthorityProvider
     [ :api_base, :authorization_url, :token_url ].each do |key|
       row_data[key] = row_data[key].to_s
     end
+    row_data[:created_at] = Time.now.to_i
     @db.execute(SQL_REGISTER, row_data)
   end
 
