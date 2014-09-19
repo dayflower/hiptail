@@ -1,4 +1,4 @@
-require 'hiptail'
+require 'hiptail/authority_provider'
 require 'sqlite3'
 
 class SQLite3AuthorityProvider < HipTail::AuthorityProvider
