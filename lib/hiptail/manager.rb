@@ -73,9 +73,7 @@ module HipTail
     end
 
     def handle_uninstall(oauth_id)
-      authority = self.authority[oauth_id]
-
-      call_hooks :uninstall, authority, oauth_id
+      call_hooks :uninstall, oauth_id
 
       @authority_provider.unregister(oauth_id)
     end
