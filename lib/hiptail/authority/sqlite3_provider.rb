@@ -11,7 +11,7 @@ class HipTail::SQLite3AuthorityProvider < HipTail::AuthorityProvider
 
   def build
     @db.execute_batch <<-'END_SQL'
-      CREATE TABLE IF NOT EXISTS room_auth (
+      CREATE TABLE IF NOT EXISTS hiptail_authority (
           oauth_id          VARCHAR(255) NOT NULL PRIMARY KEY,
           oauth_secret      VARCHAR(255) NOT NULL,
           authorization_url VARCHAR(255) NOT NULL,
@@ -24,7 +24,7 @@ class HipTail::SQLite3AuthorityProvider < HipTail::AuthorityProvider
   end
 
   SQL_GET = <<-'END_SQL'
-    SELECT * FROM room_auth WHERE oauth_id = ? LIMIT 1
+    SELECT * FROM hiptail_authority WHERE oauth_id = ? LIMIT 1
   END_SQL
 
   def get(oauth_id)
@@ -46,7 +46,7 @@ class HipTail::SQLite3AuthorityProvider < HipTail::AuthorityProvider
   end
 
   SQL_REGISTER = <<-'END_SQL'
-    REPLACE INTO room_auth
+    REPLACE INTO hiptail_authority
       ( oauth_id, oauth_secret, authorization_url, token_url, room_id, group_id, api_base )
       VALUES ( :oauth_id, :oauth_secret, :authorization_url, :token_url, :room_id, :group_id, :api_base )
   END_SQL
@@ -62,7 +62,7 @@ class HipTail::SQLite3AuthorityProvider < HipTail::AuthorityProvider
   end
 
   SQL_UNREGISTER = <<-'END_SQL'
-    DELETE FROM room_auth WHERE oauth_id = ?
+    DELETE FROM hiptail_authority WHERE oauth_id = ?
   END_SQL
 
   def unregister(oauth_id)
