@@ -23,12 +23,12 @@ Gem::Specification.new do |spec|
     lib/hiptail/atom.rb
     lib/hiptail/authority.rb
     lib/hiptail/authority/provider.rb
+    lib/hiptail/authority/sqlite3_provider.rb
     lib/hiptail/event.rb
     lib/hiptail/manager.rb
     lib/hiptail/version.rb
     lib/hiptail/web/handler.rb
     lib/hiptail/web/rack_app.rb
-    examples/persitent_authorities/sqlite3_authority_prov.rb
   ]
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})

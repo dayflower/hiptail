@@ -1,7 +1,7 @@
 require 'hiptail/authority/provider'
 require 'sqlite3'
 
-class SQLite3AuthorityProvider < HipTail::AuthorityProvider
+class HipTail::SQLite3AuthorityProvider < HipTail::AuthorityProvider
   def initialize(db)
     @authorities = {}
     @db = db
