@@ -26,9 +26,10 @@ Gem::Specification.new do |spec|
     lib/hiptail/authority/sqlite3_provider.rb
     lib/hiptail/event.rb
     lib/hiptail/manager.rb
-    lib/hiptail/version.rb
     lib/hiptail/web/handler.rb
     lib/hiptail/web/rack_app.rb
+    lib/hiptail/util.rb
+    lib/hiptail/version.rb
   ]
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
