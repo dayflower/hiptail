@@ -110,6 +110,9 @@ module HipTail
 
     def create_response(data, status = 200)
       body = JSON.generate(data)
+
+      body.gsub!(/[\u{007f}-\u{10ffff}]+/) { |match| match.unpack("U*").map! { |i| "\\u#{i.to_s(16)}" }.join }
+
       headers = {
         'Content-Type'   => 'application/json; charset=UTF-8',
         'Content-Length' => body.bytesize.to_s,
