@@ -30,6 +30,9 @@ Gem::Specification.new do |spec|
     lib/hiptail/web/rack_app.rb
     lib/hiptail/util.rb
     lib/hiptail/version.rb
+    examples/simple_rack_app_1/Gemfile
+    examples/simple_rack_app_1/config.ru
+    examples/simple_rack_app_1/README.md
   ]
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
