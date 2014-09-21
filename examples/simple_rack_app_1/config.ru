@@ -50,7 +50,7 @@ end
 
 run HipTail::Web::RackApp.new(
   :manager => manager,
-  :key => "com.example.dayflower.simple1",
+  :key => "com.example.hiptail.simple1",
   :name => "Mr. Reverse",
-  :vendor_name => "dayflower",
+  :vendor_name => "hiptail",
 )

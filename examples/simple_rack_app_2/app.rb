@@ -6,9 +6,9 @@ class SimpleAddon2 < HipTail::Web::RackApp
   def initialize
     super(
       :manager => setup_manager(),
-      :key => "com.example.dayflower.simple2",
+      :key => "com.example.hiptail.simple2",
       :name => "Colorizer",
-      :vendor_name => "dayflower",
+      :vendor_name => "hiptail",
       :message_filter => "(yellow|green|red|purple|gray)",
     )
   end
