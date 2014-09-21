@@ -4,23 +4,32 @@ module HipTail
   class Event
     attr_reader :raw
 
+    # @return [HipTail::Event]
     def initialize(params)
       @raw = params.dup
     end
 
+    # @attribute [r] type
+    # @return [String]
     def type
       @raw['event']
     end
 
+    # @attribute [r] oauth_client_id
+    # @return [String]
     def oauth_client_id
       @raw['oauth_client_id']
     end
 
+    # @attribute [r] webhook_id
+    # @return [String]
     def webhook_id
       @raw['webhook_id']
     end
 
     class << self
+      # @param [Hash] params
+      # @return [HipTail::Event]
       def parse(params)
         type = params['event']
 
@@ -41,11 +50,15 @@ module HipTail
   end
 
   class Event::RoomMessaging < Event
+    # @attribute [r] message
+    # @return [HipTail::Messsage]
     def message
       @message ||= Message.new(@raw['item']['message'])
       @message
     end
 
+    # @attribute [r] room
+    # @return [HipTail::Room]
     def room
       @room ||= Room.new(@raw['item']['room'])
       @room
@@ -59,11 +72,15 @@ module HipTail
   end
 
   class Event::RoomVisiting < Event
+    # @attribute [r] sender
+    # @return [HipTail::User]
     def sender
       @sender ||= User.create(@raw['item']['sender'])
       @sender
     end
 
+    # @attribute [r] room
+    # @return [HipTail::Room]
     def room
       @room ||= Room.new(@raw['item']['room'])
       @room

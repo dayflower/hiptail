@@ -6,19 +6,39 @@ require 'oauth2'
 
 module HipTail
   class Authority
+    # @return [String] Returns OAuth ID.
     attr_reader :oauth_id
-    attr_reader :room_id, :group_id
+    # Returns room_id for room authority.
+    # Nil for global authority.
+    # @return [String]
+    # @return [nil]
+    attr_reader :room_id
+    # Returns group_id for authority.
+    # @return [String]
+    attr_reader :group_id
 
+    # @return [Boolean] Represents whether the authority is for global or not.
     def for_global?
       ! @room_id
     end
     alias global? for_global?
 
+    # @return [Boolean] Represents whether the authority is for a room or not.
     def for_room?
       ! for_global?
     end
     alias room? for_room?
 
+    # A new instance of HipTail::Authority.
+    # @param [Hash] params
+    # @option params [String] :oauth_id
+    # @option params [String] :oauth_secret
+    # @option params [String] :authorization_url
+    # @option params [String] :token_url
+    # @option params [String] :room_id
+    # @option params [String] :group_id
+    # @option params [String] :api_base
+    # @return [HipTail::Authority]
     def initialize(params)
       @oauth_id          = params[:oauth_id]
       @oauth_secret      = params[:oauth_secret]
@@ -38,6 +58,7 @@ module HipTail
       @api_base = URI.parse(api_base_uri)
     end
 
+    # @return [Hash] Hash representation.  Convenient for persistency.
     def as_hash
       {
         :oauth_id          => @oauth_id,
@@ -50,23 +71,38 @@ module HipTail
       }
     end
 
+    # Issues send notification API.
+    # @param [Hash] params Parameters for notification API with :room_id.
+    # @option params [String] :room_id Room ID. Optional but mandatory for global authority.
+    # @return [Hash] Resulting response of API.
     def send_notification(params)
       room_id = self.room_id || params.delete(:room_id)
       raise ArgumentError.new("room_id required") unless room_id
       call_api(:method => :post, :uri => @api_base.merge("room/#{room_id}/notification"), :body_params => params)
     end
 
+    # Issues reply message API.
+    # @param [Hash] params Parameters for reply message API with :room_id.
+    # @option params [String] :room_id Room ID. Optional but mandatory for global authority.
+    # @return [Hash] Resulting response of API.
     def reply_message(params)
       room_id = self.room_id || params.delete(:room_id)
       raise ArgumentError.new("room_id required") unless room_id
       call_api(:method => :post, :uri => @api_base.merge("room/#{room_id}/reply"), :body_params => params)
     end
 
+    # Issues get all rooms API.
+    # @param [Hash] params Parameters for get all rooms API.
+    # @return [HipTail::Rooms]
     def get_all_rooms(params = {})
       res = call_api(:method => :get, :uri => @api_base.merge("room"), :query_params => params)
       Rooms.new(res)
     end
 
+    # Issues get room API.
+    # @param [Hash] params Parameters for get all room API.
+    # @option params [String] :room_id Room ID. Optional but mandatory for global authority.
+    # @return [HipTail::Room::Detail]
     def get_room(params)
       room_id = self.room_id || params.delete(:room_id)
       raise ArgumentError.new("room_id required") unless room_id
@@ -74,6 +110,9 @@ module HipTail
       Room::Detail.new(res)
     end
 
+    # Issues get all members API.
+    # @param [Hash] params Parameters for get all members API.
+    # @return [HipTail::Users]
     def get_all_members(params)
       room_id = self.room_id || params.delete(:room_id)
       raise ArgumentError.new("room_id required") unless room_id
@@ -81,6 +120,9 @@ module HipTail
       Users.new(res)
     end
 
+    # Issues get all participants API.
+    # @param [Hash] params Parameters for get all participants API.
+    # @return [HipTail::Users]
     def get_all_participants(params)
       room_id = self.room_id || params.delete(:room_id)
       raise ArgumentError.new("room_id required") unless room_id
@@ -88,6 +130,13 @@ module HipTail
       Users.new(res)
     end
 
+    # Issues add member API.
+    # @param [Hash] params Parameters for add member API with :room_id.
+    # @option params [String] :room_id Room ID. Optional but mandatory for global authority.
+    # @option params [String] :user_id One of :user_id, :user_mention, :user_email is required.
+    # @option params [String] :user_mention
+    # @option params [String] :user_email
+    # @return [Hash] Resulting response of API.
     def add_member(params)
       room_id = self.room_id || params.delete(:room_id)
       raise ArgumentError.new("room_id required") unless room_id
@@ -98,6 +147,13 @@ module HipTail
       call_api(:method => :put, :uri => @api_base.merge("room/#{room_id}/member/#{user_name}"), :body_params => params)
     end
 
+    # Issues remove member API.
+    # @param [Hash] params Parameters for remove member API with :room_id.
+    # @option params [String] :room_id Room ID. Optional but mandatory for global authority.
+    # @option params [String] :user_id One of :user_id, :user_mention, :user_email is required.
+    # @option params [String] :user_mention
+    # @option params [String] :user_email
+    # @return [Hash] Resulting response of API.
     def remove_member(params)
       room_id = self.room_id || params.delete(:room_id)
       raise ArgumentError.new("room_id required") unless room_id

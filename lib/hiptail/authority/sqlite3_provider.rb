@@ -2,6 +2,7 @@ require 'hiptail/authority/provider'
 require 'sqlite3'
 
 class HipTail::SQLite3AuthorityProvider < HipTail::AuthorityProvider
+  # @return [HipTail::SQLite3AuthorityProvider]
   def initialize(db)
     @authorities = {}
     @db = db
@@ -9,6 +10,7 @@ class HipTail::SQLite3AuthorityProvider < HipTail::AuthorityProvider
     build
   end
 
+  # @return [void]
   def build
     @db.execute_batch <<-'END_SQL'
       CREATE TABLE IF NOT EXISTS hiptail_authority (
@@ -28,6 +30,9 @@ class HipTail::SQLite3AuthorityProvider < HipTail::AuthorityProvider
     SELECT * FROM hiptail_authority WHERE oauth_id = ? LIMIT 1
   END_SQL
 
+  # @abstract
+  # @param [String] oauth_id
+  # @return [HipTail::Authority]
   def get(oauth_id)
     unless @authorities.include?(oauth_id)
       begin
@@ -52,6 +57,9 @@ class HipTail::SQLite3AuthorityProvider < HipTail::AuthorityProvider
       VALUES ( :oauth_id, :oauth_secret, :authorization_url, :token_url, :room_id, :group_id, :api_base, :created_at )
   END_SQL
 
+  # @param [String] oauth_id
+  # @param [HipTail::Authority] authority
+  # @return [HipTail::Authority]
   def register(oauth_id, authority)
     @authorities[oauth_id] = authority
 
@@ -67,6 +75,8 @@ class HipTail::SQLite3AuthorityProvider < HipTail::AuthorityProvider
     DELETE FROM hiptail_authority WHERE oauth_id = ?
   END_SQL
 
+  # @param [String] oauth_id
+  # @return [void]
   def unregister(oauth_id)
     @authorities.delete(oauth_id)
 

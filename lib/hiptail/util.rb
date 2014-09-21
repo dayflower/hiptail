@@ -1,5 +1,21 @@
 module HipTail
   module Util
+    # Build capability object.
+    # @param [Hash] params
+    # @option params [String] :key Identical key for add-on
+    # @option params [String] :name Add-on name
+    # @option params [String] :base_url Base URL for add-on
+    # @option params [String] :capability_url URL for capability
+    # @option params [String] :webhook_url URL for event webhook
+    # @option params [String] :installed_url URL for installed / uninstalled event webhook
+    # @option params [String] :description (same as :name) Add-on description (optional)
+    # @option params [String] :vendor_name (same as :name) Vendor name (optional)
+    # @option params [String] :vendor_url (same as :base_url) Vendor URL (optional)
+    # @option params [String] :homepage_url (same as :base_url) Homepage (optional)
+    # @option params [String] :sender_name (same as :name) Name of notification sender (optional)
+    # @option params [String] :allow_global (true) Allow global installation (optional)
+    # @option params [String] :allow_room (true) Allow room installation (optional)
+    # @option params [String] :message_filter Room message filter regexp (optional)
     def create_capability(params)
       requireds = %w( key name
                       base_url capability_url webhook_url installed_url )
@@ -51,7 +67,7 @@ module HipTail
         url: webhook_url,
       }
       if params[:message_filter]
-        message_webhook[:pattern] = params[:message_filter]
+        message_webhook[:pattern] = params[:message_filter].to_s
       end
       capability[:capabilities][:webhook] << message_webhook
 
