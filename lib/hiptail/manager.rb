@@ -8,6 +8,8 @@ require 'hiptail/authority/provider'
 
 module HipTail
   class Manager
+    attr_reader :authority_provider
+
     def initialize(params = {})
       @authority_provider = params[:authority_provider] || MemoryAuthorityProvider.new
 
@@ -22,6 +24,10 @@ module HipTail
       ].each do |hook_type|
         @hook[hook_type] = {}
       end
+    end
+
+    def authority_provider=(provider)
+      @authority_provider = @authority_manager.authority_provider = provider
     end
 
     def authority
@@ -140,6 +146,8 @@ module HipTail
     end
 
     class AuthorityManager
+      attr_accessor :authority_provider
+
       def initialize(authority_provider)
         @authority_provider = authority_provider
       end
