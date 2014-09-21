@@ -28,8 +28,8 @@ manager.on_install do |authority|
   end
 end
 
-manager.on_room_message do |authority, event|
-  authority.send_notification(
+manager.on_room_message do |event|
+  event.authority.send_notification(
     :room_id => event.room.id,
     :color => 'green',
     :message => event.message.message.reverse,
@@ -38,8 +38,8 @@ manager.on_room_message do |authority, event|
   )
 end
 
-manager.on_room_enter do |authority, event|
-  authority.send_notification(
+manager.on_room_enter do |event|
+  event.authority.send_notification(
     :room_id => event.room.id,
     :color => 'red',
     :message => "Welcome, @#{event.sender.mention_name}!",

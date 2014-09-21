@@ -20,7 +20,7 @@ class SimpleAddon2 < HipTail::Web::RackApp
 
     manager = HipTail::Manager.new(:authority_provider => HipTail::SQLite3AuthorityProvider.new(db))
 
-    manager.on_room_message do |authority, event|
+    manager.on_room_message do |event|
       message = event.message.message
       if message =~ %r{(yellow|green|red|purple|gray)}xm
         color = $1
@@ -28,7 +28,7 @@ class SimpleAddon2 < HipTail::Web::RackApp
         color = 'random'
       end
 
-      authority.send_notification(
+      event.authority.send_notification(
         :room_id => event.room.id,
         :color => color,
         :message => message,

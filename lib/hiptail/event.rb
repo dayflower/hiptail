@@ -2,6 +2,7 @@ require 'hiptail/atom'
 
 module HipTail
   class Event
+    attr_accessor :authority
     attr_reader :raw
 
     # @return [HipTail::Event]

@@ -64,8 +64,7 @@ module HipTail
 
     # Registers hook on events.
     # @return [String] Hook ID
-    # @yield [authority, event]
-    # @yield [HipTail::Authority] authority
+    # @yield [event]
     # @yield [HipTail::Event] event
     def on_event(&block)
       register_hook :event, block
@@ -73,8 +72,7 @@ module HipTail
 
     # Registers hook on messaging events (room_message and room_notification).
     # @return [String] Hook ID
-    # @yield [authority, event]
-    # @yield [HipTail::Authority] authority
+    # @yield [event]
     # @yield [HipTail::Event::RoomMessaging] event
     def on_room_messaging(&block)
       register_hook :room_messaging, block
@@ -82,8 +80,7 @@ module HipTail
 
     # Registers hook on room_message event.
     # @return [String] Hook ID
-    # @yield [authority, event]
-    # @yield [HipTail::Authority] authority
+    # @yield [event]
     # @yield [HipTail::Event::RoomMessage] event
     def on_room_message(&block)
       register_hook :room_message, block
@@ -91,8 +88,7 @@ module HipTail
 
     # Registers hook on room_notification event.
     # @return [String] Hook ID
-    # @yield [authority, event]
-    # @yield [HipTail::Authority] authority
+    # @yield [event]
     # @yield [HipTail::Event::RoomNotification] event
     def on_room_notification(&block)
       register_hook :room_notification, block
@@ -100,8 +96,7 @@ module HipTail
 
     # Registers hook on room visiting event (room_enter and room_exit).
     # @return [String] Hook ID
-    # @yield [authority, event]
-    # @yield [HipTail::Authority] authority
+    # @yield [event]
     # @yield [HipTail::Event::RoomVisiting] event
     def on_room_visiting(&block)
       register_hook :room_visiting, block
@@ -109,8 +104,7 @@ module HipTail
 
     # Registers hook on room_enter event.
     # @return [String] Hook ID
-    # @yield [authority, event]
-    # @yield [HipTail::Authority] authority
+    # @yield [event]
     # @yield [HipTail::Event::RoomEnter] event
     def on_room_enter(&block)
       register_hook :room_enter, block
@@ -118,8 +112,7 @@ module HipTail
 
     # Registers hook on room_exit event.
     # @return [String] Hook ID
-    # @yield [authority, event]
-    # @yield [HipTail::Authority] authority
+    # @yield [event]
     # @yield [HipTail::Event::RoomExit] event
     def on_room_exit(&block)
       register_hook :room_exit, block
@@ -152,27 +145,27 @@ module HipTail
     # @return [void]
     def handle_event(params)
       event = Event.parse(params)
-      authority = self.authority[event.oauth_client_id]
+      event.authority = self.authority[event.oauth_client_id]
 
-      call_hooks :event, authority, event
+      call_hooks :event, event
 
       if event.is_a?(Event::RoomMessaging)
-        call_hooks :room_messaging, authority, event
+        call_hooks :room_messaging, event
 
         case event
         when Event::RoomMessage
-          call_hooks :room_message, authority, event
+          call_hooks :room_message, event
         when Event::RoomNotification
-          call_hooks :room_notification, authority, event
+          call_hooks :room_notification, event
         end
       elsif event.is_a?(Event::RoomVisiting)
-        call_hooks :room_visiting, authority, event
+        call_hooks :room_visiting, event
 
         case event
         when Event::RoomEnter
-          call_hooks :room_enter, authority, event
+          call_hooks :room_enter, event
         when Event::RoomExit
-          call_hooks :room_exit, authority, event
+          call_hooks :room_exit, event
         end
       end
     end
