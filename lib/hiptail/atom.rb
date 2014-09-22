@@ -69,24 +69,6 @@ module HipTail
       @date
     end
 
-    # @attribute [r] message
-    # @return [String]
-    def message
-      @raw['message']
-    end
-
-    # @attribute [r] message_format
-    # @return [String]
-    def message_format
-      @raw['message_format']
-    end
-
-    # @attribute [r] color
-    # @return [String]
-    def color
-      @raw['color']
-    end
-
     # @attribute [r] from
     # @return [HipTail::User]
     def from
@@ -99,6 +81,68 @@ module HipTail
     def mentions
       @mentions ||= (@raw['mentions'] || []).map { |data| User.create(data) }
       @mentions
+    end
+
+    # @attribute [r] message
+    # @return [String]
+    def message
+      @raw['message']
+    end
+
+    # @attribute [r] text
+    # @return [String]
+    def text
+      message
+    end
+
+    # @attribute [r] is_talk?
+    def is_talk?
+      false
+    end
+
+    # @attribute [r] is_notification?
+    def is_notification?
+      false
+    end
+  end
+
+  class Message::Talk < Message
+    def is_talk?;         true;  end
+    def is_notification?; false; end
+  end
+
+  class Message::Notification < Message
+    def is_talk?;         false; end
+    def is_notification?; true;  end
+
+    # @attribute [r] message_format
+    # @return [String]
+    def message_format
+      @raw['message_format']
+    end
+
+    # @attribute [r] is_text?
+    # @return [Boolean]
+    def is_text?
+      message_format == 'text'
+    end
+
+    # @attribute [r] is_html?
+    # @return [Boolean]
+    def is_html?
+      message_format == 'html'
+    end
+
+    # @attribute [r] html?
+    # @return [String]
+    def html
+      message
+    end
+
+    # @attribute [r] color
+    # @return [String]
+    def color
+      @raw['color']
     end
   end
 

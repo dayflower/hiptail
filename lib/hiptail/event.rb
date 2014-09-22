@@ -51,11 +51,11 @@ module HipTail
   end
 
   class Event::RoomMessaging < Event
+    # @abstract
     # @attribute [r] message
     # @return [HipTail::Messsage]
     def message
-      @message ||= Message.new(@raw['item']['message'])
-      @message
+      raise
     end
 
     # @attribute [r] room
@@ -67,9 +67,21 @@ module HipTail
   end
 
   class Event::RoomMessage < Event::RoomMessaging
+    # @attribute [r] message
+    # @return [HipTail::Messsage::Talk]
+    def message
+      @message ||= Message::Talk.new(@raw['item']['message'])
+      @message
+    end
   end
 
   class Event::RoomNotification < Event::RoomMessaging
+    # @attribute [r] message
+    # @return [HipTail::Messsage::Notification]
+    def message
+      @message ||= Message::Notification.new(@raw['item']['message'])
+      @message
+    end
   end
 
   class Event::RoomVisiting < Event
