@@ -37,6 +37,9 @@ Gem::Specification.new do |spec|
     examples/simple_rack_app_2/app.rb
     examples/simple_rack_app_2/config.ru
     examples/simple_rack_app_2/README.md
+    examples/integrate_sinatra/Gemfile
+    examples/integrate_sinatra/app.rb
+    examples/integrate_sinatra/README.md
   ]
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
