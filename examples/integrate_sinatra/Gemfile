@@ -1,0 +1,5 @@
+source 'https://rubygems.org'
+
+gem 'hiptail'
+gem 'sqlite3'   # for HipTail::SQLite3AuthorityProvider
+gem 'sinatra'
