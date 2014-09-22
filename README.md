@@ -1,6 +1,6 @@
 # HipTail
 
-TODO: Write a gem description
+HipChat Add-on Framework
 
 ## Installation
 
