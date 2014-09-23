@@ -22,6 +22,7 @@ module HipTail
         :install, :uninstall,
         :event,
         :room_messaging, :room_message, :room_notification,
+        :room_topic_change,
         :room_visiting,  :room_enter, :room_exit,
       ].each do |hook_type|
         @hook[hook_type] = {}
@@ -94,6 +95,14 @@ module HipTail
       register_hook :room_notification, block
     end
 
+    # Registers hook on room_topic_change event.
+    # @return [String] Hook ID
+    # @yield [event]
+    # @yield [HipTail::Event::RoomTopicChange] event
+    def on_room_topic_change(&block)
+      register_hook :room_topic_change, block
+    end
+
     # Registers hook on room visiting event (room_enter and room_exit).
     # @return [String] Hook ID
     # @yield [event]
@@ -158,6 +167,8 @@ module HipTail
         when Event::RoomNotification
           call_hooks :room_notification, event
         end
+      elsif event.is_a?(Event::RoomTopicChange)
+        call_hooks :room_topic_change, event
       elsif event.is_a?(Event::RoomVisiting)
         call_hooks :room_visiting, event
 

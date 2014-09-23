@@ -39,6 +39,8 @@ module HipTail
           return Event::RoomMessage.new(params)
         when 'room_notification'
           return Event::RoomNotification.new(params)
+        when 'room_topic_change'
+          return Event::RoomTopicChange.new(params)
         when 'room_enter'
           return Event::RoomEnter.new(params)
         when 'room_exit'
@@ -81,6 +83,21 @@ module HipTail
     def message
       @message ||= Message::Notification.new(@raw['item']['message'])
       @message
+    end
+  end
+
+  class Event::RoomTopicChange < Event
+    # @attribute [r] sender
+    # @return [HipTail::User]
+    def sender
+      @sender ||= User.create(@raw['item']['sender'])
+      @sender
+    end
+
+    # @attribute [r] topic
+    # @return [String]
+    def topic
+      @raw['item']['topic']
     end
   end
 
