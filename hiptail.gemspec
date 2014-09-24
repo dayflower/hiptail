@@ -17,6 +17,7 @@ Gem::Specification.new do |spec|
     hiptail.gemspec
     README.md
     LICENSE.txt
+    CHANGELOG.md
     Gemfile
     Rakefile
     lib/hiptail.rb
