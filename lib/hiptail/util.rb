@@ -1,5 +1,8 @@
 module HipTail
   module Util
+    DEFAULT_VENDOR_NAME = "HipTail"
+    DEFAULT_VENDOR_URL  = "https://github.com/dayflower/hiptail"
+
     # Build capability object.
     # @param [Hash] params
     # @option params [String] :key Identical key for add-on
@@ -29,8 +32,8 @@ module HipTail
         name: params[:name],
         description: params[:description] || params[:name],
         vendor: {
-          name: params[:vendor_name] || params[:name],
-          url: (params[:vendor_url] || params[:base_url]).to_s,
+          name: params[:vendor_name] || DEFAULT_VENDOR_NAME,
+          url: (params[:vendor_url] || DEFAULT_VENDOR_URL).to_s,
         },
         links: {
           self: params[:capability_url].to_s,
