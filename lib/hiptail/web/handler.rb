@@ -46,13 +46,13 @@ module HipTail
     # Handles retrieving capability request.
     # @param [Rack::Request] request
     # @param [Hash] params Capability parameters
-    # @option params [String] :key Identical key for add-on
-    # @option params [String] :name Add-on name
-    # @option params [String] :base_url Base URL for add-on
+    # @option params [String] :key Identical key for integration
+    # @option params [String] :name integration name
+    # @option params [String] :base_url Base URL for integration
     # @option params [String] :capability_url URL for capability
     # @option params [String] :webhook_url URL for event webhook
     # @option params [String] :installed_url URL for installed / uninstalled event webhook
-    # @option params [String] :description (same as :name) Add-on description (optional)
+    # @option params [String] :description (same as :name) integration description (optional)
     # @option params [String] :vendor_name (same as :name) Vendor name (optional)
     # @option params [String] :vendor_url (same as :base_url) Vendor URL (optional)
     # @option params [String] :homepage_url (same as :base_url) Homepage (optional)

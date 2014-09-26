@@ -5,5 +5,5 @@
     $ bundle install
     $ bundle exec -- rackup
 
-Then install this add-on on integrations page in HipChat administration page.
+Then install this integration on integrations page in HipChat administration page.
 Specify the application capability URL (e.g. http://example.com:9292/cap).

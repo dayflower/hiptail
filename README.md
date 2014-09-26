@@ -1,6 +1,6 @@
 # HipTail
 
-HipChat Add-on Framework
+HipChat Integration (Add-on) Framework
 
 ## Installation
 
