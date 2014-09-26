@@ -8,7 +8,7 @@ module HipTail
 
   class Web::RackApp
     # @return [HipTail::Manager] Returns HipTail::Manager.
-    attr_reader :manager
+    attr_reader :manager, :path
 
     # @param [Hash] params Capability parameters (and manager)
     # @option params [HipTail::Manager] :manager HipTail::Manager instance (optional)
@@ -38,19 +38,19 @@ module HipTail
       @capability_params = params
 
       base_url = URI.parse('http://example.com/').merge(params[:base_path])
-      path = {
+      @path = {
         :base => base_url.request_uri,
       }
       [ :webhook, :installed, :capability ].each do |key|
-        path[key] = base_url.merge('./' + params["#{key}_path".to_sym]).request_uri
+        @path[key] = base_url.merge('./' + params["#{key}_path".to_sym]).request_uri
       end
 
       @regex = {}
-      @regex[:capability] = %r{\A #{Regexp.escape(path[:capability])} \z}xm
-      @regex[:event]      = %r{\A #{Regexp.escape(path[:webhook])} \z}xm
+      @regex[:capability] = %r{\A #{Regexp.escape(@path[:capability])} \z}xm
+      @regex[:event]      = %r{\A #{Regexp.escape(@path[:webhook])} \z}xm
 
-      @regex[:install]   = %r{\A #{Regexp.escape(path[:installed])} \z}xm
-      @regex[:uninstall] = %r{\A #{Regexp.escape(path[:installed])} / ([-0-9a-fA-F]+) \z}xm
+      @regex[:install]   = %r{\A #{Regexp.escape(@path[:installed])} \z}xm
+      @regex[:uninstall] = %r{\A #{Regexp.escape(@path[:installed])} / ([-0-9a-fA-F]+) \z}xm
     end
 
     def call(env)
