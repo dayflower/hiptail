@@ -96,7 +96,8 @@ module HipTail
     # @return [HipTail::Rooms]
     def get_all_rooms(params = {})
       res = call_api(:method => :get, :uri => @api_base.merge("room"), :query_params => params)
-      Rooms.new(res)
+      return unless res.successful?
+      Rooms.new(res.data)
     end
 
     # Issues get room API.
@@ -107,7 +108,8 @@ module HipTail
       room_id = self.room_id || params.delete(:room_id)
       raise ArgumentError.new("room_id required") unless room_id
       res = call_api(:method => :get, :uri => @api_base.merge("room/#{room_id}"), :query_params => params)
-      Room::Detail.new(res)
+      return unless res.successful?
+      Room::Detail.new(res.data)
     end
 
     # Issues get all members API.
@@ -117,7 +119,8 @@ module HipTail
       room_id = self.room_id || params.delete(:room_id)
       raise ArgumentError.new("room_id required") unless room_id
       res = call_api(:method => :get, :uri => @api_base.merge("room/#{room_id}/member"), :query_params => params)
-      Users.new(res)
+      return unless res.successful?
+      Users.new(res.data)
     end
 
     # Issues get all participants API.
@@ -127,7 +130,8 @@ module HipTail
       room_id = self.room_id || params.delete(:room_id)
       raise ArgumentError.new("room_id required") unless room_id
       res = call_api(:method => :get, :uri => @api_base.merge("room/#{room_id}/participant"), :query_params => params)
-      Users.new(res)
+      return unless res.successful?
+      Users.new(res.data)
     end
 
     # Issues add member API.
@@ -172,8 +176,8 @@ module HipTail
       user_id = params.delete(:user_id)
       raise ArgumentError.new("user_id required") unless user_id
       res = call_api(:method => :get, :uri => @api_base.merge("user/#{user_id}"), :query_params => params)
-      return if res['error']
-      User::Person.new(res)
+      return unless res.successful?
+      User::Person.new(res.data)
     end
 
     # Issues get all users API.
@@ -181,7 +185,8 @@ module HipTail
     # @return [HipTail::Users]
     def get_all_users(params = {})
       res = call_api(:method => :get, :uri => @api_base.merge("user"), :query_params => params)
-      Users.new(res)
+      return unless res.successful?
+      Users.new(res.data)
     end
 
     private
@@ -235,11 +240,24 @@ module HipTail
         http.request(req)
       end
 
-      if res.content_type =~ %r{\A application/json}x
-        return JSON.parse(res.body)
-      else
-        return {}
+      def res.successful?
+        self.is_a?(Net::HTTPSuccess)
       end
+
+      if res.content_type =~ %r{\A application/json}x
+        body_data = JSON.parse(res.body)
+      else
+        body_data = {}
+      end
+
+      res_class = class << res; self; end
+      res_class.class_eval do
+        define_method(:data) do
+          body_data
+        end
+      end
+
+      res
     end
 
     def token
