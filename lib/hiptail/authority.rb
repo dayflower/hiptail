@@ -113,7 +113,7 @@ module HipTail
     # Issues get all members API.
     # @param [Hash] params Parameters for get all members API.
     # @return [HipTail::Users]
-    def get_all_members(params)
+    def get_all_members(params = {})
       room_id = self.room_id || params.delete(:room_id)
       raise ArgumentError.new("room_id required") unless room_id
       res = call_api(:method => :get, :uri => @api_base.merge("room/#{room_id}/member"), :query_params => params)
@@ -123,7 +123,7 @@ module HipTail
     # Issues get all participants API.
     # @param [Hash] params Parameters for get all participants API.
     # @return [HipTail::Users]
-    def get_all_participants(params)
+    def get_all_participants(params = {})
       room_id = self.room_id || params.delete(:room_id)
       raise ArgumentError.new("room_id required") unless room_id
       res = call_api(:method => :get, :uri => @api_base.merge("room/#{room_id}/participant"), :query_params => params)
