@@ -164,6 +164,26 @@ module HipTail
       call_api(:method => :delete, :uri => @api_base.merge("room/#{room_id}/member/#{user_name}"), :body_params => params)
     end
 
+    # Issues view user API.
+    # @param [Hash] params Parameters for view user API with :user_id.
+    # @option params [String] :user_id User ID or email or mention name (beginning with an '@').
+    # @return [HipTail::User]
+    def view_user(params)
+      user_id = params.delete(:user_id)
+      raise ArgumentError.new("user_id required") unless user_id
+      res = call_api(:method => :get, :uri => @api_base.merge("user/#{user_id}"), :query_params => params)
+      return if res['error']
+      User::Person.new(res)
+    end
+
+    # Issues get all users API.
+    # @param [Hash] params Parameters for get all users API.
+    # @return [HipTail::Users]
+    def get_all_users(params = {})
+      res = call_api(:method => :get, :uri => @api_base.merge("user"), :query_params => params)
+      Users.new(res)
+    end
+
     private
 
     def user_name_from_params(params)
