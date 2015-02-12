@@ -215,7 +215,7 @@ module HipTail
       }
 
       if args[:body_params]
-        body = JSON.generate(args[:body_params] || {})
+        body = JSON.generate(args[:body_params] || {}, :ascii_only => true)
         headers['Content-Length'] = body.bytesize.to_s
       else
         body = nil
