@@ -51,80 +51,80 @@ module HipTail
     # @return [String] Hook ID
     # @yield [authority]
     # @yield [HipTail::Authority] authority
-    def on_install(&block)
-      register_hook :install, block
+    def on_install(*args, &block)
+      register_hook :install, args, block
     end
 
     # Registers hook on uninstallation.
     # @return [String] Hook ID
     # @yield [oauth_id]
     # @yield [String] oauth_id
-    def on_uninstall(&block)
-      register_hook :uninstall, block
+    def on_uninstall(*args, &block)
+      register_hook :uninstall, args, block
     end
 
     # Registers hook on events.
     # @return [String] Hook ID
     # @yield [event]
     # @yield [HipTail::Event] event
-    def on_event(&block)
-      register_hook :event, block
+    def on_event(*args, &block)
+      register_hook :event, args, block
     end
 
     # Registers hook on messaging events (room_message and room_notification).
     # @return [String] Hook ID
     # @yield [event]
     # @yield [HipTail::Event::RoomMessaging] event
-    def on_room_messaging(&block)
-      register_hook :room_messaging, block
+    def on_room_messaging(*args, &block)
+      register_hook :room_messaging, args, block
     end
 
     # Registers hook on room_message event.
     # @return [String] Hook ID
     # @yield [event]
     # @yield [HipTail::Event::RoomMessage] event
-    def on_room_message(&block)
-      register_hook :room_message, block
+    def on_room_message(*args, &block)
+      register_hook :room_message, args, block
     end
 
     # Registers hook on room_notification event.
     # @return [String] Hook ID
     # @yield [event]
     # @yield [HipTail::Event::RoomNotification] event
-    def on_room_notification(&block)
-      register_hook :room_notification, block
+    def on_room_notification(*args, &block)
+      register_hook :room_notification, args, block
     end
 
     # Registers hook on room_topic_change event.
     # @return [String] Hook ID
     # @yield [event]
     # @yield [HipTail::Event::RoomTopicChange] event
-    def on_room_topic_change(&block)
-      register_hook :room_topic_change, block
+    def on_room_topic_change(*args, &block)
+      register_hook :room_topic_change, args, block
     end
 
     # Registers hook on room visiting event (room_enter and room_exit).
     # @return [String] Hook ID
     # @yield [event]
     # @yield [HipTail::Event::RoomVisiting] event
-    def on_room_visiting(&block)
-      register_hook :room_visiting, block
+    def on_room_visiting(*args, &block)
+      register_hook :room_visiting, args, block
     end
 
     # Registers hook on room_enter event.
     # @return [String] Hook ID
     # @yield [event]
     # @yield [HipTail::Event::RoomEnter] event
-    def on_room_enter(&block)
-      register_hook :room_enter, block
+    def on_room_enter(*args, &block)
+      register_hook :room_enter, args, block
     end
 
     # Registers hook on room_exit event.
     # @return [String] Hook ID
     # @yield [event]
     # @yield [HipTail::Event::RoomExit] event
-    def on_room_exit(&block)
-      register_hook :room_exit, block
+    def on_room_exit(*args, &block)
+      register_hook :room_exit, args, block
     end
 
     # Handles installing request.
@@ -186,25 +186,28 @@ module HipTail
     # @param [Proc] block
     # @param [String] hook_id
     # @return [String] Hook ID
-    def register_hook(hook_type, block, hook_id = nil)
-      hook_id ||= block.object_id.to_s
-      @hook[hook_type][hook_id] = block
-      return hook_id
-    end
-
-    # Unregisters a hook.
-    # @param [Symbol] hook_type
-    # @param [String] hook_id
-    # @return [Proc] Unregistered procedure
-    def unregister_hook(hook_type, hook_id = nil)
-      @hook[hook_type].delete(hook_id.to_s)
+    def register_hook(hook_type, args, block)
+      priority = args.size > 0 ? args.shift : 100
+      @hook[hook_type][priority] ||= []
+      @hook[hook_type][priority] << block
     end
 
     private
 
     def call_hooks(hook_type, *args)
-      @hook[hook_type].values.each do |block|
-        block.call(*args)
+      @hook[hook_type].keys.sort.each do |key|
+        @hook[hook_type][key].each do |block|
+          aborted = false
+          begin
+            r = block.call(*args)
+          rescue LocalJumpError => e
+            aborted = e.reason
+            raise e unless [:break, :next, :return].include?(aborted)
+            r = e.exit_value
+          end
+
+          break if aborted == :break
+        end
       end
     end
 
