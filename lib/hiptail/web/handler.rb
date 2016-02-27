@@ -79,6 +79,9 @@ module HipTail
       params[:installed_url] = base_url.merge('./' + params[:installed_path])
 
       capability = HipTail::Util::create_capability(params)
+      if block_given?
+        yield capability
+      end
       create_response(capability)
     end
 
