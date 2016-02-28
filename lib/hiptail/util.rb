@@ -16,6 +16,7 @@ module HipTail
     # @option params [String] :vendor_url (same as :base_url) Vendor URL (optional)
     # @option params [String] :homepage_url (same as :base_url) Homepage (optional)
     # @option params [String] :sender_name (same as :name) Name of notification sender (optional)
+    # @option params [String] :avatar Url of avatar image (optional)
     # @option params [String] :allow_global (true) Allow global installation (optional)
     # @option params [String] :allow_room (true) Allow room installation (optional)
     # @option params [String] :message_filter Room message filter regexp (optional)
@@ -73,6 +74,10 @@ module HipTail
         message_webhook[:pattern] = params[:message_filter].to_s
       end
       capability[:capabilities][:webhook] << message_webhook
+
+      if params[:avatar]
+        capability[:capabilities][:hipchatApiConsumer][:avatar] = params[:avatar]
+      end
 
       capability
     end
