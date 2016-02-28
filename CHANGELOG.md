@@ -1,3 +1,7 @@
+## 0.0.4
+* Support 'avatar' capability.
+* Handlers of Manager now accept priority and have ability to stop propagation.
+
 ## 0.0.3
 * Use :ascii_only flag of JSON.generate.  (thx to kimoto)
 
