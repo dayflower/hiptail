@@ -274,6 +274,7 @@ module HipTail
           @oauth_id, @oauth_secret,
           :authorize_url => @authorization_url,
           :token_url     => @token_url,
+          :auth_scheme   => :basic_auth,
         )
       end
 
